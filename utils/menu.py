@@ -103,13 +103,47 @@ def fluxo_fechar_comanda(service, cardapio):
     num = obter_inteiro("Numero da comanda para fechamento: ")
     pedido = service.fechar_comanda(num)
 
-    if pedido:
-        print("\n === Comanda Fechada com Sucesso ===")
-        print(pedido)
-        salvar_pedidos(service.pedidos_ativos)
+    if not pedido:
+        print("\n === Comanda nao encontrada! ===")
+        return 
 
-    else:
-        print("Comanda nao encontrada!")
+    subtotal = pedido.calcular_total()
+    taxa = subtotal * 0.10
+    total_geral = subtotal + taxa
+
+    print(f"\n === Fechamento de comanda {pedido.comanda}===")
+    print(f"Cliente: {pedido.cliente.nome}")
+    print("========================================")
+
+    for item in pedido.itens:
+        print(item)
+
+    print("========================================")
+    print(f"Subtotal: R$ {subtotal:.2f}")
+    print(f"Taxa de Servico (10%): R$ {taxa:.2f}")
+    print("========================================")
+    print(f"Total Geral: R$ {total_geral:.2f}")
+    print("========================================")
+
+    pago_acumulado = 0.0
+
+    while pago_acumulado < total_geral:
+        falta = total_geral - pago_acumulado
+        valor_pago = obter_float(f"Valor a pagar (Falta R$ {falta:.2f}): R$ ")
+
+        if valor_pago <= 0:
+            print("Erro o valor de pagamento deve ser maior que zero")
+            continue
+        pago_acumulado += valor_pago
+        print(f"Total pago ate agora: R$ {pago_acumulado:.2f}")
+
+    salvar_pedidos(service.pedidos_ativos)
+
+    troco = pago_acumulado - total_geral
+    print("\n === Comanda Fechada com Sucesso ===")
+    if troco > 0:
+        print(f"Troco: R${troco:.2f}")
+    
 
 def fluxo_listar_cardapio(service, cardapio):
     print("\n === Cardapio ===")

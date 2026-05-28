@@ -39,14 +39,19 @@ class Pedido:
         }
     
     def __str__(self):
-        # Gera o extrato visual formatado da comanda
-        extrato = f"comanda {self.comanda} | Cliente: {self.cliente.nome}\n"
-        extrato += "=======================================\n"
+        subtotal = self.calcular_total()
+        taxa = subtotal * 0.10
+        total_geral = subtotal + taxa
+        
+        extrato = (f"Comanda {self.comanda} | Cliente: {self.cliente.nome}\n")
+        extrato += "=================================\n"
 
         for item in self.itens:
-            extrato += f"{item}\n" 
-        
-        extrato += "========================================\n"
-        extrato += f"total: R$ {self.calcular_total():.2f}"
-        return extrato
+            extrato += f"{item}\n"
 
+        extrato += f"Subtotal: R$ {subtotal:.2f}\n"
+        extrato += f"Taxa de Servico (10%) R$ {taxa:.2f}\n"
+        extrato += "=================================\n"
+        extrato += f"Total: R$ {total_geral:.2f}"
+
+        return extrato
