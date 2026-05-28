@@ -27,7 +27,7 @@ def carregar_cardapio(cardapio):
             dados = json.load(f)
             for item in dados:
                 id_prod = item.get("id", len(cardapio.produtos) + 1)
-                categoria = item.get("Categoria", "Geral")
+                categoria = item.get("categoria", "Geral")
                 produto = Produto(id_prod, item["nome"], item["preco"], categoria)
                 cardapio.add_produto(produto)
     except (json.JSONDecodeError, FileNotFoundError):

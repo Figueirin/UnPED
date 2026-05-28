@@ -20,21 +20,6 @@ def main():
 
     # Carrega o cardápio do arquivo JSON
     carregar_cardapio(cardapio)
-
-    # Carga inicial do Cardápio (produtos de demonstração caso esteja vazio na primeira execução)
-        # Carga inicial do Cardápio com IDs e Categorias
-    if not cardapio.produtos:
-        cardapio.add_produto(Produto(1, "Cafe", 4.50, "Bebidas Quentes"))
-        cardapio.add_produto(Produto(2, "Pao de Queijo", 6.00, "Salgados"))
-        cardapio.add_produto(Produto(3, "Coca-Cola", 5.50, "Bebidas Frias"))
-        cardapio.add_produto(Produto(4, "Suco de Laranja", 7.00, "Bebidas Frias"))
-        cardapio.add_produto(Produto(5, "Salgado Assado", 8.50, "Salgados"))
-        cardapio.add_produto(Produto(6, "Bolo de Cenoura", 6.50, "Sobremesas"))
-        cardapio.add_produto(Produto(7, "Torta de Frango", 9.00, "Salgados"))
-        cardapio.add_produto(Produto(8, "Agua Mineral", 3.00, "Bebidas Frias"))
-        salvar_cardapio(cardapio)
-
-
     carregar_pedidos(service, cardapio)
     
 

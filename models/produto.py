@@ -23,6 +23,6 @@ class Produto:
     
     def __str__(self):
         # Mostra o produto formatado com duas casas decimais no preço (ex: Café R$4.50)
-        return f"[{self.id}] |{self.nome} | R${self.preco:.2f}"
+        return f"[{self.id}] | {self.nome} | R${self.preco:.2f}"
 
     
