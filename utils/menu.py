@@ -1,3 +1,6 @@
+from models.produto import Produto
+from services.persistencia import salvar_cardapio
+from services.persistencia import salvar_pedidos
 def exibir_menu():
     # Desenha o menu do bar no console e captura a escolha
     print("\n UnPED - Comandas")
@@ -54,6 +57,80 @@ def lancar_item(pedido, cardapio):
         mais_itens = input("Deseja adicionar mais um item? s/n: ").strip().lower()
 
         if mais_itens != 's':
-            break  # Sai da rotina e retorna ao menu principal do main.py
+            break
 
-                
+def fluxo_abrir_comanda(service, cardapio):
+    num = obter_inteiro("Numero da comanda: ")
+    nome = input("Nome do cliente: ")
+
+    if not nome.strip():
+        print("O nome nao pode ser vazio")
+
+    else:
+        sucesso = service.abrir_comanda(num, nome)
+
+        if sucesso:
+            salvar_pedidos(service.pedidos_ativos)
+            deseja_pedido = input("Deseja fazer mais algum pedido? s/n: ").strip().lower()
+
+            if deseja_pedido == 's':
+                pedido = service.buscar_comandas(num)
+                lancar_item(pedido, cardapio)
+                salvar_pedidos(service.pedidos_ativos)
+
+def fluxo_adicionar_item(service, cardapio):
+    num = obter_inteiro("Numero da Comanda: ")
+    pedido = service.buscar_comandas(num)
+
+    if pedido:
+        lancar_item(pedido, cardapio)
+        salvar_pedidos(service.pedidos_ativos)
+
+    else:
+        print("Comanda nao encontrada")
+
+def fluxo_ver_extrato(service, cardapio):
+    num = obter_inteiro("Numero da comanda: ")
+    pedido = service.buscar_comandas(num)
+
+    if pedido:
+        print("\n" + str(pedido))
+
+    else:
+        print("Comanda nao encontrada")
+
+def fluxo_fechar_comanda(service, cardapio):
+    num = obter_inteiro("Numero da comanda para fechamento: ")
+    pedido = service.fechar_comanda(num)
+
+    if pedido:
+        print("\n === Comanda Fechada com Sucesso ===")
+        print(pedido)
+        salvar_pedidos(service.pedidos_ativos)
+
+    else:
+        print("Comanda nao encontrada!")
+
+def fluxo_listar_cardapio(service, cardapio):
+    print("\n === Cardapio ===")
+    cardapio.listar_produtos()
+
+def fluxo_cadastrar_produto(service, cardapio):
+    nome = input("Nome do produto a ser adicionado: ")
+
+    if not nome.strip():
+        print("O nome do produto nao pode ser vazio")
+
+    else:
+        preco = obter_float("Preço: ")
+
+        if preco <= 0:
+            print("O valor do produto não pode ser =< 0")
+
+        else:
+            cardapio.add_produto(Produto(nome, preco))
+            salvar_cardapio(cardapio)         
+            print(f"Produto {nome} cadastrada com sucesso")    
+
+def fluxo_listar_comandas_ativas(service, cardapio):
+    service.listar_comandas_ativas()

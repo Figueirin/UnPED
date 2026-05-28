@@ -3,6 +3,15 @@ from models.produto import Produto
 from services.pedido_service import PedidoService
 from utils.menu import exibir_menu, obter_float, obter_inteiro, lancar_item
 from services.persistencia import salvar_cardapio, carregar_cardapio, salvar_pedidos, carregar_pedidos
+from utils.menu import (
+    fluxo_listar_comandas_ativas,
+    fluxo_cadastrar_produto,
+    fluxo_listar_cardapio,
+    fluxo_fechar_comanda,
+    fluxo_ver_extrato,
+    fluxo_adicionar_item,
+    fluxo_abrir_comanda
+)
 
 def main():
     # Instanciamos os gerenciadores globais (Serviços e Cardápio da loja)
@@ -24,106 +33,32 @@ def main():
         cardapio.add_produto(Produto("Agua Mineral", 3.00))
         # Salva o arquivo cardapio.json inicial
         salvar_cardapio(cardapio)
-    
-    # Carrega os pedidos salvos da comanda
+
     carregar_pedidos(service, cardapio)
     
-    # Loop Principal do Sistema
+
+    acoes = {
+        "1": fluxo_abrir_comanda,
+        "2": fluxo_adicionar_item,
+        "3": fluxo_ver_extrato,
+        "4": fluxo_fechar_comanda,
+        "5": fluxo_listar_cardapio,
+        "6": fluxo_cadastrar_produto,
+        "7": fluxo_listar_comandas_ativas
+    }
+
     while True:
         opcao = exibir_menu()
 
-        if opcao == "1":
-            # Abertura de nova comanda
-            num = obter_inteiro("Numero da Comanda: ")
-            nome = input("Nome do cliente: ")
-
-            if not nome.strip():
-                print("Erro... O nome do cliente nao pode ser vazio")
-
-            else:
-                sucesso = service.abrir_comanda(num, nome)
-
-                # Se abrir com sucesso, oferece o lançamento imediato de itens
-                if sucesso:
-                    # Salva a nova comanda vazia no JSON
-                    salvar_pedidos(service.pedidos_ativos)
-                    
-                    deseja_pedido = input("Deseja fazer um pedido? s/n: ").strip().lower()
-
-                    if deseja_pedido == "s":
-                        pedido = service.buscar_comandas(num)
-                        lancar_item(pedido, cardapio)
-                        # Salva novamente no JSON com os itens adicionados
-                        salvar_pedidos(service.pedidos_ativos)
-        
-        elif opcao == "2":
-            # Adiciona item a uma comanda já existente
-            num = obter_inteiro("Numero da comanda: ")
-            pedido = service.buscar_comandas(num)
-
-            if pedido:
-                lancar_item(pedido, cardapio)
-                # Salva a comanda atualizada no JSON
-                salvar_pedidos(service.pedidos_ativos)
-            else:
-                print("Comanda não encontrada!")
-
-        elif opcao == "3":
-            # Visualização do extrato de consumo atual de uma comanda
-            num = obter_inteiro("Numero da comanda: ")
-            pedido = service.buscar_comandas(num)
-
-            if pedido:
-                print("\n" + str(pedido)) # O str(pedido) chama automaticamente o método __str__ da classe Pedido
-            else:
-                print("Comanda nao encontrada")
-
-        elif opcao == '4':
-            # Pagamento e encerramento (fechamento) de comanda
-            num = obter_inteiro("Numero da comanda para fechar: ")
-            pedido = service.fechar_comanda(num)
-
-            if pedido:
-                print("\n === Comanda Fechada com sucesso ===")
-                print(pedido)
-                # Salva a remoção da comanda no JSON
-                salvar_pedidos(service.pedidos_ativos)
-            else:
-                print("Comanda não encontrada!")
-
-        elif opcao == '5':
-            # Exibição do Cardápio completo cadastrado na memória
-            print("\n === Cardapio ===")
-            cardapio.listar_produtos()
-
-        elif opcao == '6':
-            # Cadastro de novo produto no Cardápio Geral do estabelecimento
-            nome = input("Nome do novo produto: ")
-
-            if not nome.strip():
-                print("O nome do produto nao pode ser vazio")
-
-            else:
-                preco = obter_float("Preço: ")
-
-                if preco <= 0:
-                    print("O valor do produto nao pode ser =< 0")
-                else:
-                    cardapio.add_produto(Produto(nome, preco))
-                    # Salva o novo cardápio com o novo produto no JSON
-                    salvar_cardapio(cardapio)
-                    print(f"Produto {nome} cadastrado com sucesso")
-
-        elif opcao == '7':
-            # Listagem resumida de todas as comandas abertas com valor corrente
-            service.listar_comandas_ativas()
-
-        elif opcao == '0':
-            print("Encerrado sistema...")
+        if opcao == '0':
+            print("Encerrando Sistema...")
             break
 
+        elif opcao in acoes:
+            acoes[opcao](service, cardapio)
+
         else:
-            print("Opção inválida, tente novamente")
+            print("Opção invalida, tente novamente")
 
 if __name__ == "__main__":
     main()
