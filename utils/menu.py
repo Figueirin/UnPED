@@ -37,8 +37,8 @@ def lancar_item(pedido, cardapio):
     while True:
         print("\n=== Cardapio ===")
         cardapio.listar_produtos()
-        nome_prod = input("Digite o nome do produto que deseja: ")
-        produto = cardapio.buscar_produto(nome_prod)
+        termo = input("Digite o nome ou ID do produto que deseja: ")
+        produto = cardapio.buscar_produto(termo)
 
         if produto:
             qtd = obter_inteiro(f"Quantidade de {produto.nome}: ")
@@ -154,17 +154,24 @@ def fluxo_cadastrar_produto(service, cardapio):
 
     if not nome.strip():
         print("O nome do produto nao pode ser vazio")
+        return
 
-    else:
-        preco = obter_float("Preço: ")
+    preco = obter_float("Preço: ")
 
-        if preco <= 0:
-            print("O valor do produto não pode ser =< 0")
+    if preco <= 0:
+        print("O valor do produto não pode ser =< 0")
+        return
 
-        else:
-            cardapio.add_produto(Produto(nome, preco))
-            salvar_cardapio(cardapio)         
-            print(f"Produto {nome} cadastrada com sucesso")    
+    categoria = input("Digite a categoria do produto: "). strip()
+
+    if not categoria:
+        categoria = "Geral"
+
+    novo_id = max([p.id for p in cardapio.produtos], default= 0) + 1
+    cardapio.add_produto(Produto(novo_id, nome, preco, categoria))
+    salvar_cardapio(cardapio)
+
+    print(f"Produto '{nome}' cadastrado com sucesso com o ID {novo_id} na categoria '{categoria}'!")
 
 def fluxo_listar_comandas_ativas(service, cardapio):
     service.listar_comandas_ativas()

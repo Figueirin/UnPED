@@ -1,8 +1,8 @@
 from models.cardapio import Cardapio
 from models.produto import Produto
 from services.pedido_service import PedidoService
-from utils.menu import exibir_menu, obter_float, obter_inteiro, lancar_item
-from services.persistencia import salvar_cardapio, carregar_cardapio, salvar_pedidos, carregar_pedidos
+from utils.menu import exibir_menu
+from services.persistencia import salvar_cardapio, carregar_cardapio, carregar_pedidos
 from utils.menu import (
     fluxo_listar_comandas_ativas,
     fluxo_cadastrar_produto,
@@ -22,17 +22,18 @@ def main():
     carregar_cardapio(cardapio)
 
     # Carga inicial do Cardápio (produtos de demonstração caso esteja vazio na primeira execução)
+        # Carga inicial do Cardápio com IDs e Categorias
     if not cardapio.produtos:
-        cardapio.add_produto(Produto("Cafe", 4.50))
-        cardapio.add_produto(Produto("Pao de Queijo", 6.00))
-        cardapio.add_produto(Produto("Coca-Cola", 5.50))
-        cardapio.add_produto(Produto("Suco de Laranja", 7.00))
-        cardapio.add_produto(Produto("Salgado Assado", 8.50))
-        cardapio.add_produto(Produto("Bolo de Cenoura", 6.50))
-        cardapio.add_produto(Produto("Torta de Frango", 9.00))
-        cardapio.add_produto(Produto("Agua Mineral", 3.00))
-        # Salva o arquivo cardapio.json inicial
+        cardapio.add_produto(Produto(1, "Cafe", 4.50, "Bebidas Quentes"))
+        cardapio.add_produto(Produto(2, "Pao de Queijo", 6.00, "Salgados"))
+        cardapio.add_produto(Produto(3, "Coca-Cola", 5.50, "Bebidas Frias"))
+        cardapio.add_produto(Produto(4, "Suco de Laranja", 7.00, "Bebidas Frias"))
+        cardapio.add_produto(Produto(5, "Salgado Assado", 8.50, "Salgados"))
+        cardapio.add_produto(Produto(6, "Bolo de Cenoura", 6.50, "Sobremesas"))
+        cardapio.add_produto(Produto(7, "Torta de Frango", 9.00, "Salgados"))
+        cardapio.add_produto(Produto(8, "Agua Mineral", 3.00, "Bebidas Frias"))
         salvar_cardapio(cardapio)
+
 
     carregar_pedidos(service, cardapio)
     

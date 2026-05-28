@@ -26,7 +26,9 @@ def carregar_cardapio(cardapio):
         with open(CAMINHO_CARDAPIO, "r", encoding="utf-8") as f:
             dados = json.load(f)
             for item in dados:
-                produto = Produto(item["nome"], item["preco"])
+                id_prod = item.get("id", len(cardapio.produtos) + 1)
+                categoria = item.get("Categoria", "Geral")
+                produto = Produto(id_prod, item["nome"], item["preco"], categoria)
                 cardapio.add_produto(produto)
     except (json.JSONDecodeError, FileNotFoundError):
         pass

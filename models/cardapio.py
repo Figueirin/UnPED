@@ -14,14 +14,26 @@ class Cardapio:
     
     def listar_produtos(self):
         # Exibe todos os produtos do cardápio um a um
+        categorias = {}
         for produto in self.produtos:
-            print(produto)
+            cat = produto.categoria
+            
+            if cat not in categorias:
+                categorias[cat] = []
+            
+            categorias[cat].append(produto)
 
-    def buscar_produto(self, nome_produto):
-        # Busca um produto na lista pelo nome (case-insensitive) e retorna o objeto Produto
+        for categoria, itens in categorias.items():
+            print(f"\n === {categoria.upper()} ===")
+
+            for produto in itens:
+                print(f"{produto}")
+
+    def buscar_produto(self, termo):
+        termo_str = str(termo).strip().lower()
         for produto in self.produtos:
-            if produto.nome.lower() == nome_produto.lower():
+            if str(produto.id) == termo_str or produto.nome.lower() == termo_str:
                 return produto
-    
+
         return None
 
