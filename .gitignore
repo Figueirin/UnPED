@@ -12,5 +12,5 @@ __pycache__/
 Thumbs.db
 
 # Arquivos de dados locais (se preferir não subir as comandas salvas pro GitHub)
-# data/cardapio.json
-# data/pedidos.json
+data/cardapio.json
+data/pedidos.json
