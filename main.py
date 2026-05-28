@@ -2,21 +2,31 @@ from models.cardapio import Cardapio
 from models.produto import Produto
 from services.pedido_service import PedidoService
 from utils.menu import exibir_menu, obter_float, obter_inteiro, lancar_item
+from services.persistencia import salvar_cardapio, carregar_cardapio, salvar_pedidos, carregar_pedidos
 
 def main():
     # Instanciamos os gerenciadores globais (Serviços e Cardápio da loja)
     service = PedidoService()
     cardapio = Cardapio()
 
-    # Carga inicial do Cardápio (produtos de demonstração)
-    cardapio.add_produto(Produto("Cafe", 4.50))
-    cardapio.add_produto(Produto("Pao de Queijo", 6.00))
-    cardapio.add_produto(Produto("Coca-Cola", 5.50))
-    cardapio.add_produto(Produto("Suco de Laranja", 7.00))
-    cardapio.add_produto(Produto("Salgado Assado", 8.50))
-    cardapio.add_produto(Produto("Bolo de Cenoura", 6.50))
-    cardapio.add_produto(Produto("Torta de Frango", 9.00))
-    cardapio.add_produto(Produto("Agua Mineral", 3.00))
+    # Carrega o cardápio do arquivo JSON
+    carregar_cardapio(cardapio)
+
+    # Carga inicial do Cardápio (produtos de demonstração caso esteja vazio na primeira execução)
+    if not cardapio.produtos:
+        cardapio.add_produto(Produto("Cafe", 4.50))
+        cardapio.add_produto(Produto("Pao de Queijo", 6.00))
+        cardapio.add_produto(Produto("Coca-Cola", 5.50))
+        cardapio.add_produto(Produto("Suco de Laranja", 7.00))
+        cardapio.add_produto(Produto("Salgado Assado", 8.50))
+        cardapio.add_produto(Produto("Bolo de Cenoura", 6.50))
+        cardapio.add_produto(Produto("Torta de Frango", 9.00))
+        cardapio.add_produto(Produto("Agua Mineral", 3.00))
+        # Salva o arquivo cardapio.json inicial
+        salvar_cardapio(cardapio)
+    
+    # Carrega os pedidos salvos da comanda
+    carregar_pedidos(service, cardapio)
     
     # Loop Principal do Sistema
     while True:
@@ -35,11 +45,16 @@ def main():
 
                 # Se abrir com sucesso, oferece o lançamento imediato de itens
                 if sucesso:
+                    # Salva a nova comanda vazia no JSON
+                    salvar_pedidos(service.pedidos_ativos)
+                    
                     deseja_pedido = input("Deseja fazer um pedido? s/n: ").strip().lower()
 
                     if deseja_pedido == "s":
                         pedido = service.buscar_comandas(num)
                         lancar_item(pedido, cardapio)
+                        # Salva novamente no JSON com os itens adicionados
+                        salvar_pedidos(service.pedidos_ativos)
         
         elif opcao == "2":
             # Adiciona item a uma comanda já existente
@@ -48,6 +63,8 @@ def main():
 
             if pedido:
                 lancar_item(pedido, cardapio)
+                # Salva a comanda atualizada no JSON
+                salvar_pedidos(service.pedidos_ativos)
             else:
                 print("Comanda não encontrada!")
 
@@ -69,6 +86,8 @@ def main():
             if pedido:
                 print("\n === Comanda Fechada com sucesso ===")
                 print(pedido)
+                # Salva a remoção da comanda no JSON
+                salvar_pedidos(service.pedidos_ativos)
             else:
                 print("Comanda não encontrada!")
 
@@ -91,6 +110,8 @@ def main():
                     print("O valor do produto nao pode ser =< 0")
                 else:
                     cardapio.add_produto(Produto(nome, preco))
+                    # Salva o novo cardápio com o novo produto no JSON
+                    salvar_cardapio(cardapio)
                     print(f"Produto {nome} cadastrado com sucesso")
 
         elif opcao == '7':
