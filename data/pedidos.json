@@ -1,0 +1,35 @@
+[
+    {
+        "Comanda": 25,
+        "Cliente": "Renato",
+        "Items": [
+            {
+                "produto": {
+                    "nome": "Rabada",
+                    "preco": 159.99,
+                    "id": 2,
+                    "categoria": "Pratos Principais"
+                },
+                "quantidade": 2
+            },
+            {
+                "produto": {
+                    "nome": "Suco de Laranja",
+                    "preco": 14.99,
+                    "id": 5,
+                    "categoria": "Sucos"
+                },
+                "quantidade": 6
+            },
+            {
+                "produto": {
+                    "nome": "Coca Zero KS",
+                    "preco": 8.99,
+                    "id": 7,
+                    "categoria": "Refrigerantes"
+                },
+                "quantidade": 1
+            }
+        ]
+    }
+]

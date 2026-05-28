@@ -1,28 +1,38 @@
 class Produto:
     """
-    Representa um item do cardápio (Café, Pão de Queijo, etc.).
-    Guarda as informações gerais do produto (nome e preço de venda).
-
-    28/05 - Adicionada numero indetificador do produto e categoria.
+    Representa um item individual disponível no cardápio do estabelecimento.
+    Esta classe encapsula as propriedades básicas de um produto (ID, nome, preço e categoria).
     """
     def __init__(self, id_produto, nome_produto, preco, categoria):
+        """
+        Construtor da classe Produto.
+        
+        Parâmetros:
+        - id_produto (int): Identificador numérico único do produto.
+        - nome_produto (str): Nome de exibição do produto.
+        - preco (float): Preço de venda unitário do produto.
+        - categoria (str): Categoria à qual o produto pertence (ex: Bebidas, Salgados, etc.).
+        """
+        self.id = id_produto
         self.nome = nome_produto
         self.preco = preco
-        self.id = id_produto
         self.categoria = categoria
 
     def to_dict(self):
-        # Converte o objeto para um dicionário simples (usado para salvar em JSON mais tarde)
+        """
+        Converte o objeto do tipo Produto em um dicionário Python.
+        Útil para o processo de serialização e persistência de dados em arquivos JSON.
+        """
         return {
+            "id": self.id,
             "nome": self.nome,
             "preco": self.preco,
-            "id": self.id,
             "categoria": self.categoria
-
         }
     
     def __str__(self):
-        # Mostra o produto formatado com duas casas decimais no preço (ex: Café R$4.50)
+        """
+        Retorna a representação textual formatada do produto.
+        Exemplo de saída: [1] | Café | R$4.50
+        """
         return f"[{self.id}] | {self.nome} | R${self.preco:.2f}"
-
-    

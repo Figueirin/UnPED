@@ -1,8 +1,7 @@
 from models.cardapio import Cardapio
-from models.produto import Produto
 from services.pedido_service import PedidoService
 from utils.menu import exibir_menu
-from services.persistencia import salvar_cardapio, carregar_cardapio, carregar_pedidos
+from services.persistencia import carregar_cardapio, carregar_pedidos
 from utils.menu import (
     fluxo_listar_comandas_ativas,
     fluxo_cadastrar_produto,
@@ -14,15 +13,21 @@ from utils.menu import (
 )
 
 def main():
-    # Instanciamos os gerenciadores globais (Serviços e Cardápio da loja)
+    """
+    Função principal de inicialização do sistema UnPED.
+    Responsável por instanciar os controladores, carregar os dados persistidos em disco (JSON)
+    e gerenciar a execução do loop principal através do dicionário de ações mapeadas.
+    """
+    # Instanciamos os gerenciadores de estado globais (Serviços e Cardápio do estabelecimento)
     service = PedidoService()
     cardapio = Cardapio()
 
-    # Carrega o cardápio do arquivo JSON
+    # Recupera o cardápio e as comandas ativas salvas nos arquivos JSON correspondentes
     carregar_cardapio(cardapio)
     carregar_pedidos(service, cardapio)
-    
 
+    # Dicionário de ações (Mapeamento de Rotas/Opções do Menu)
+    # Evita estruturas condicionais encadeadas (if-elif) excessivas na main, tornando o código limpo e extensível.
     acoes = {
         "1": fluxo_abrir_comanda,
         "2": fluxo_adicionar_item,
@@ -33,6 +38,7 @@ def main():
         "7": fluxo_listar_comandas_ativas
     }
 
+    # Loop Principal do Ciclo de Vida do Sistema
     while True:
         opcao = exibir_menu()
 
@@ -40,6 +46,7 @@ def main():
             print("Encerrando Sistema...")
             break
 
+        # Roteamento dinâmico da ação selecionada
         elif opcao in acoes:
             acoes[opcao](service, cardapio)
 
