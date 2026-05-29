@@ -73,7 +73,7 @@ classDiagram
     class Cardapio {
         +list produtos
         +__init__()
-        +add_produto(produto)
+        +add_produto(produto) bool
         +listar_produtos()
         +buscar_produto(termo) Produto
     }
