@@ -187,10 +187,18 @@ def fluxo_cadastrar_produto(service, cardapio):
     Ação do menu: Adiciona um novo produto ao catálogo do cardápio geral.
     Pergunta nome, preço e categoria, gerando o ID identificador de forma automática.
     """
-    nome = input("Nome do produto a ser adicionado: ")
-    if not nome.strip():
+    nome = input("Nome do produto a ser adicionado: ").strip()
+    if not nome:
         print("O nome do produto nao pode ser vazio")
         return
+
+    # Evita que o mesmo produto seja cadastrado com outro ID (duplicatas de nome)
+    nome_low = nome.lower()
+    for p in cardapio.produtos:
+        if p.nome.lower() == nome_low:
+            print(f"Erro: O produto '{p.nome}' já está cadastrado com o ID {p.id}!")
+            return
+
 
     preco = obter_float("Preço: ")
     if preco <= 0:

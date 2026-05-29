@@ -7,6 +7,9 @@ from models.pedido import Pedido
 CAMINHO_CARDAPIO = "data/cardapio.json"
 CAMINHO_PEDIDOS = "data/pedidos.json"
 
+# Garante que a pasta data/ exista antes de qualquer operação de leitura/escrita
+os.makedirs("data", exist_ok=True)
+
 def salvar_cardapio(cardapio):
     """
     Grava de forma persistente todos os produtos atuais do cardápio em um arquivo JSON.
@@ -35,7 +38,7 @@ def carregar_cardapio(cardapio):
                 # Instancia e registra o produto na memória
                 produto = Produto(id_prod, item["nome"], item["preco"], categoria)
                 cardapio.add_produto(produto)
-    except (json.JSONDecodeError, FileNotFoundError):
+    except (json.JSONDecodeError, FileNotFoundError, UnicodeDecodeError, KeyError):
         # Ignora erros de leitura ou arquivo vazio para não quebrar a inicialização do programa
         pass
 
@@ -78,6 +81,6 @@ def carregar_pedidos(service, cardapio):
                         if produto:
                             # Re-vincula o produto e quantidade à comanda
                             pedido.adicionar_item(produto, qtd)
-    except (json.JSONDecodeError, FileNotFoundError):
+    except (json.JSONDecodeError, FileNotFoundError, UnicodeDecodeError, KeyError):
         # Passa reto em caso de arquivo vazio ou corrompido
         pass

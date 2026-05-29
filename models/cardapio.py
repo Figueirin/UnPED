@@ -15,8 +15,13 @@ class Cardapio:
     def add_produto(self, produto):
         """
         Cadastra um novo objeto Produto no catálogo do cardápio.
+        Retorna True se cadastrado com sucesso, False se for duplicado (ID ou Nome).
         """
+        for p in self.produtos:
+            if str(p.id) == str(produto.id) or p.nome.lower() == produto.nome.lower():
+                return False
         self.produtos.append(produto)
+        return True
     
     def listar_produtos(self):
         """
